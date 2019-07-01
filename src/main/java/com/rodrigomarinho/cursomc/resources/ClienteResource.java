@@ -14,7 +14,7 @@ import javassist.tools.rmi.ObjectNotFoundException;
 
 @RestController
 @RequestMapping(value="/clientes")
-public class ClienteResources {
+public class ClienteResource {
 	
 	@Autowired
 	private ClienteService clienteService;

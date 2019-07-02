@@ -58,7 +58,6 @@ public class CursomcApplication implements CommandLineRunner {
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
 	
-	
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
 

@@ -1,6 +1,8 @@
 package com.rodrigomarinho.cursomc.resources;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rodrigomarinho.cursomc.domain.Categoria;
+import com.rodrigomarinho.cursomc.dto.CategoriaDTO;
 import com.rodrigomarinho.cursomc.services.CategoriaService;
 
 import javassist.tools.rmi.ObjectNotFoundException;
@@ -47,5 +50,12 @@ public class CategoriaResource {
 	public ResponseEntity<Void> delete(@PathVariable Integer id) throws ObjectNotFoundException {
 		categoriaService.delete(id);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(method=RequestMethod.GET)
+	public ResponseEntity<List<CategoriaDTO>> findAll() throws ObjectNotFoundException {
+		List<Categoria> lista = categoriaService.findAll();
+		List<CategoriaDTO> listaDto = lista.stream().map(categoriaObj -> new CategoriaDTO(categoriaObj)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listaDto);
 	}
 } 

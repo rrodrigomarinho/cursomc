@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +35,9 @@ public class CategoriaService {
 	}
 	
 	public Categoria update(Categoria categoria) throws ObjectNotFoundException {
-		find(categoria.getId());
-		return categoriaRepository.save(categoria);
+		Categoria newCategoria = find(categoria.getId());
+		updateData(newCategoria, categoria);
+		return categoriaRepository.save(newCategoria);
 	}
 	
 	public void delete(Integer id) throws ObjectNotFoundException {
@@ -59,5 +60,9 @@ public class CategoriaService {
 	
 	public Categoria fromDTO(CategoriaDTO categoriaDTO) {
 		return new Categoria(categoriaDTO.getId(), categoriaDTO.getNome());
+	}
+	
+	private void updateData(Categoria newCategoria, Categoria categoria) {
+		newCategoria.setNome(categoria.getNome());
 	}
 }

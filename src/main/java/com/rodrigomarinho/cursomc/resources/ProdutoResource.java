@@ -1,5 +1,7 @@
 package com.rodrigomarinho.cursomc.resources;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -9,10 +11,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rodrigomarinho.cursomc.domain.Categoria;
 import com.rodrigomarinho.cursomc.domain.Produto;
-import com.rodrigomarinho.cursomc.dto.CategoriaDTO;
 import com.rodrigomarinho.cursomc.dto.ProdutoDTO;
+import com.rodrigomarinho.cursomc.resources.utils.URL;
 import com.rodrigomarinho.cursomc.services.ProdutoService;
 
 import javassist.tools.rmi.ObjectNotFoundException;
@@ -32,13 +33,15 @@ public class ProdutoResource {
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<Page<ProdutoDTO>> findPage(
-			@RequestParam(value="nome", defaultValue="") Integer nome, 
-			@RequestParam(value="categorias", defaultValue="") Integer categorias, 
+			@RequestParam(value="nome", defaultValue="") String nome, 
+			@RequestParam(value="categorias", defaultValue="") String categorias, 
 			@RequestParam(value="page", defaultValue="0") Integer page, 
 			@RequestParam(value="linePerPage", defaultValue="24") Integer linePerPage, 
 			@RequestParam(value="direction", defaultValue="ASC") String direction, 
 			@RequestParam(value="orderBy", defaultValue="nome") String orderBy) {
-		Page<Produto> lista = produtoService.search(nome, categorias, page, linePerPage, direction, orderBy);
+		String nomeDecoded = URL.decodeParam(nome);
+		List<Integer> ids = URL.decodeIntList(categorias);
+		Page<Produto> lista = produtoService.search(nomeDecoded, ids, page, linePerPage, direction, orderBy);
 		Page<ProdutoDTO> listaDto = lista.map(produtoObj -> new ProdutoDTO(produtoObj));
 		return ResponseEntity.ok().body(listaDto);
 	}

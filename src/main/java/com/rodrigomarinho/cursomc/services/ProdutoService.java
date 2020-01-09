@@ -31,9 +31,14 @@ public class ProdutoService {
 		return obj.orElseThrow(() -> new MyObjectNotFoundException("Objeto não encontrato! Id: " + id + ", Tipo: " + Produto.class.getName()));
 	}
 	
-	public Page<Produto> search(String nome, List<Integer> ids,Integer page, Integer linePerPage, String direction, String orderBy) {
+	public Page<Produto> search(String nome, List<Integer> ids, Integer page, Integer linePerPage, String direction, String orderBy) {
 		PageRequest pageRequest = PageRequest.of(page, linePerPage, Direction.valueOf(direction), orderBy);
-		List<Categoria> categorias = categoriaRepository.findAll(ids);
-		return produtoRepository.search(nome, categorias, pageRequest);
+		List<Categoria> categorias = categoriaRepository.findAllById(ids);
+		
+//	 	Primeira maneira de fazer a consulta
+//		return produtoRepository.search(nome, categorias, pageRequest);
+		
+//	 	Segunda maneira de fazer a consulta			
+		return produtoRepository.findDistinctByNomeContainingAndCategoriasIn(nome, categorias, pageRequest);
 	}
 }

@@ -9,8 +9,7 @@ public interface EmailService {
 	
 	void sendOrderConfirmationEmail(Pedido pedido);
 	
-	void sendEmail(SimpleMailMessage msg);
+	void sendEmail(SimpleMailMessage simpleMailMessage);
 	
 	void sendNewPasswordEmail(Cliente cliente, String newPass);
-
 }

@@ -142,7 +142,7 @@ public class Cliente implements Serializable {
 		this.pedidos = pedidos;
 	}
 	
-	public Set<Perfil> getPerfil() {
+	public Set<Perfil> getPerfis() {
 		return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
 	}
 	

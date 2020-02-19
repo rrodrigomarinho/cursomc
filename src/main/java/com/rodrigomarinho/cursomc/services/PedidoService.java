@@ -6,8 +6,12 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.rodrigomarinho.cursomc.domain.Cliente;
 import com.rodrigomarinho.cursomc.domain.ItemPedido;
 import com.rodrigomarinho.cursomc.domain.PagamentoComBoleto;
 import com.rodrigomarinho.cursomc.domain.Pedido;
@@ -15,6 +19,8 @@ import com.rodrigomarinho.cursomc.domain.enums.EstadoPagamento;
 import com.rodrigomarinho.cursomc.repositories.ItemPedidoRepository;
 import com.rodrigomarinho.cursomc.repositories.PagamentoRepository;
 import com.rodrigomarinho.cursomc.repositories.PedidoRepository;
+import com.rodrigomarinho.cursomc.security.UserSS;
+import com.rodrigomarinho.cursomc.services.exceptions.MyAuthorizationException;
 import com.rodrigomarinho.cursomc.services.exceptions.MyObjectNotFoundException;
 
 import javassist.tools.rmi.ObjectNotFoundException;
@@ -73,8 +79,16 @@ public class PedidoService {
 		
 		itemPedidoRepository.saveAll(pedido.getItens());
 		emailService.sendOrderConfirmationHtmlEmail(pedido);
-		//emailService.sendOrderConfirmationEmail(pedido);
-		
 		return pedido;
+	}
+	
+	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String direction, String orderBy) throws ObjectNotFoundException {
+		UserSS user = UserService.authenticated();
+		if (user == null) {
+			throw new MyAuthorizationException("Acesso negado");
+		}
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		Cliente cliente =  clienteService.find(user.getId());
+		return pedidoRepository.findByCliente(cliente, pageRequest);
 	}
 }

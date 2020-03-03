@@ -113,7 +113,18 @@ public class ClienteService {
 		newCliente.setEmail(cliente.getEmail());
 	}
 	
-	public URI uploadProfilePicture(MultipartFile multipartFile) {
-		return s3Service.uploadFile(multipartFile);
+	public URI uploadProfilePicture(MultipartFile multipartFile) throws ObjectNotFoundException {
+		
+		UserSS userSS = UserService.authenticated();
+		
+		if (userSS == null) {
+			throw new MyAuthorizationException("Acesso negado");
+		}
+		
+		URI uri = s3Service.uploadFile(multipartFile);
+		Cliente cliente = find(userSS.getId());
+		cliente.setImageUrl(uri.toString());
+		clienteRepository.save(cliente);
+		return uri;
 	}
 }

@@ -2,7 +2,10 @@ package com.rodrigomarinho.cursomc.services;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
@@ -37,6 +40,16 @@ public class ImageService {
 		BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 		newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null);
 		return newBufferedImage;
+	}
+	
+	public InputStream getInputStream(BufferedImage bufferedImage, String extensao) {
+		try {
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			ImageIO.write(bufferedImage, extensao, byteArrayOutputStream);
+			return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+		} catch (IOException e) {
+			throw new MyFileException("Erro ao ler arquivo.");
+		}
 	}
 
 }

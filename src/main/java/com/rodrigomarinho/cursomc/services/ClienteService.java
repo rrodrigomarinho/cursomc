@@ -54,6 +54,9 @@ public class ClienteService {
 	@Value("${img.prefix.client.profile}")
 	private String prefixo;
 	
+	@Value("${img.profile.size}")
+	private Integer size;
+	
 	public Cliente find(Integer id) throws ObjectNotFoundException {
 		
 		UserSS userSS = UserService.authenticated();
@@ -129,6 +132,8 @@ public class ClienteService {
 		}
 		
 		BufferedImage bufferedImage = imageService.getJpgImageFromFile(multipartFile);
+		bufferedImage = imageService.cropSquare(bufferedImage);
+		bufferedImage = imageService.resize(bufferedImage, size);
 		String extensao = ".jpg";
 		String fileName = prefixo.concat(userSS.getId().toString()).concat(extensao);
 		
